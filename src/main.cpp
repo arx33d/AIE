@@ -9,6 +9,7 @@
 #include <iostream>
 #include <string>
 #include <chrono>
+#include <cstdlib>
 
 void run_benchmarks() {
     std::cout << "\n=== Running Low-Bit Kernels Benchmark ===\n";
@@ -57,6 +58,20 @@ int main(int argc, char* argv[]) {
         return 0;
     }
 
+    if (argc >= 2 && std::string(argv[1]) == "--shrink") {
+        std::string model_name = (argc >= 3) ? argv[2] : "dolphin3:8b";
+        std::string target_ram = "3.5";
+        for (int i = 3; i < argc - 1; ++i) {
+            if (std::string(argv[i]) == "--ram") {
+                target_ram = argv[i + 1];
+            }
+        }
+        std::cout << "\n[*] Launching Automated Model Weight Compression Pipeline for: " << model_name << "\n";
+        std::string cmd = "python python/tools/optimize_ollama_model.py --model " + model_name + " --target-ram " + target_ram;
+        int status = std::system(cmd.c_str());
+        return status;
+    }
+
     if (argc >= 3 && std::string(argv[1]) == "--profile") {
         std::string model_file = argv[2];
         std::cout << "\n[*] Zero-copy inspecting safetensors: " << model_file << "\n";
@@ -98,8 +113,9 @@ int main(int argc, char* argv[]) {
     }
 
     std::cout << "\nCommands:\n"
-              << "  --benchmark                   Run microbenchmarks for LUT-GEMM and Paged KV\n"
-              << "  --profile <model.safetensors> Inspect safetensors graph and detect topology\n"
-              << "  --serve <model.safetensors>   Run OpenAI (:8080) and Ollama (:11434) servers\n";
+              << "  --shrink <ollama-model> [--ram 3.5] Automatically compress installed model to target RAM\n"
+              << "  --benchmark                         Run microbenchmarks for LUT-GEMM and Paged KV\n"
+              << "  --profile <model.safetensors>       Inspect safetensors graph and detect topology\n"
+              << "  --serve <model.safetensors>         Run OpenAI (:8080) and Ollama (:11434) servers\n";
     return 0;
 }
