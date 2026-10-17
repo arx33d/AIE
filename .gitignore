@@ -1,0 +1,38 @@
+# Build directories
+build/
+bin/
+lib/
+out/
+.vs/
+.vscode/
+
+# Compiled object files & libraries
+*.obj
+*.o
+*.lib
+*.a
+*.dll
+*.so
+*.dylib
+*.exp
+*.ilk
+*.pdb
+
+# Executables
+*.exe
+
+# Python cache & virtual environments
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+env/
+
+# Temporary and log files
+*.log
+*.tmp
+*.safetensors
+*.gguf
+*.json
+!python/**
